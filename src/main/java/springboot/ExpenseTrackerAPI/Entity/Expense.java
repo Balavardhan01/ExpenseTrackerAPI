@@ -1,9 +1,6 @@
 package springboot.ExpenseTrackerAPI.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
@@ -17,7 +14,10 @@ public class Expense {
     private Long id;
     private String title;
     private BigDecimal amount;
-    private String category;
+
+    @Enumerated(EnumType.STRING)
+    private ExpenseCategory category;
+
     @DateTimeFormat
     private LocalDate expenseDate;
 }
