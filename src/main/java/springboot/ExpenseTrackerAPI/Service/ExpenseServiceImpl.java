@@ -55,4 +55,31 @@ public class ExpenseServiceImpl {
         responseDto.setExpenseDate(expense.getExpenseDate());
         return responseDto;
     }
+
+    public ExpenseResponseDto updateExpense(Long id, ExpenseRequestDto requestDto) {
+        // 1. Find the existing expense or throw an error if the ID doesn't exist
+        Expense existingExpense = repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Expense not found with id: " + id));
+
+        // 2. Overwrite the existing data with the incoming DTO data
+        existingExpense.setTitle(requestDto.getTitle());
+        existingExpense.setAmount(requestDto.getAmount());
+        existingExpense.setCategory(ExpenseCategory.valueOf(requestDto.getCategory().toUpperCase()));
+        // The original expenseDate remains unchanged
+
+        // 3. Save the modified entity
+        Expense updatedExpense = repo.save(existingExpense);
+
+        // 4. Map it back to a DTO to return to the controller (using the helper method built earlier)
+        return mapToResponseDto(updatedExpense);
+    }
+
+    public void deleteExpense(Long id) {
+        // 1. Verify the expense exists first
+        Expense existingExpense = repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Expense not found with id: " + id));
+
+        // 2. Instruct the repository to delete it
+        repo.delete(existingExpense);
+    }
 }
